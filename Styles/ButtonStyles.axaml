@@ -1,9 +1,10 @@
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:CalculatorAvalonia.ViewModels"
+        xmlns:op="using:CalculatorAvalonia.Models.Rpn.Operations"
+        x:DataType="vm:MainWindowViewModel">
   <Design.PreviewWith>
-    <Border Padding="20">
-        <Button />
-    </Border>
+        <Button Content="Sample"/>
   </Design.PreviewWith>
 
     <Style Selector="Button">
@@ -13,4 +14,53 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="FontSize" Value="32" />
     </Style>
+    
+    <Style Selector="Button.btnDigit">
+        <Setter Property="Command" Value="{Binding AddDigitCommand}" />
+        <Setter Property="CommandParameter"
+                Value="{Binding Content, RelativeSource={RelativeSource Self}}" />
+    </Style>
+    
+    
+    <Style Selector="Button.btnAdd">
+        <Setter Property="Command" Value="{Binding SetOperationCommand}" />
+        <Setter Property="CommandParameter"
+                Value="{x:Static op:OperationType.Add}" />
+        <Setter Property="Content" Value="+" />
+    </Style>
+    
+    <Style Selector="Button.btnSubtract">
+        <Setter Property="Command" Value="{Binding SetOperationCommand}" />
+        <Setter Property="CommandParameter"
+                Value="{x:Static op:OperationType.Subtract}" />
+        <Setter Property="Content" Value="-" />
+    </Style>
+
+    <Style Selector="Button.btnDivide">
+        <Setter Property="Command" Value="{Binding SetOperationCommand}" />
+        <Setter Property="CommandParameter"
+                Value="{x:Static op:OperationType.Divide}" />
+        <Setter Property="Content" Value="/" />
+    </Style>
+
+    <Style Selector="Button.btnMultiply">
+        <Setter Property="Command" Value="{Binding SetOperationCommand}" />
+        <Setter Property="CommandParameter"
+                Value="{x:Static op:OperationType.Multiply}" />
+        <Setter Property="Content" Value="*" />
+    </Style>
+
+
+    <Style Selector="Button.btnOpenBracket">
+        <Setter Property="Command" Value="{Binding SetBracketCommand}" />
+        <Setter Property="CommandParameter" Value="{x:Static op:BracketType.Open}" />
+        <Setter Property="Content" Value="(" />
+    </Style>
+
+    <Style Selector="Button.btnCloseBracket">
+        <Setter Property="Command" Value="{Binding SetBracketCommand}" />
+        <Setter Property="CommandParameter" Value="{x:Static op:BracketType.Close}" />
+        <Setter Property="Content" Value=")" />
+    </Style>
+        
 </Styles>
