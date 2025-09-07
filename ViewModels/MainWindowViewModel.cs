@@ -12,33 +12,74 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private string _result;
 
+    [ObservableProperty]
+    private string _expression;
+
     private List<ExpressionTokenBase> _tokens;
 
     private bool _isResultShown;
+    private bool _isNewNumber;
 
     public MainWindowViewModel()
     {
         _tokens ??= new();
         Result = "0";
+        Expression = "";
+
+        _isNewNumber = true;
     }
 
     [RelayCommand]
     private void AddDigit(string digit)
     {
+        if (_isNewNumber)
+        {
+            Result = "0";
+            _isNewNumber = false;
+        }
         Result = Result == "0" ? Result = Result.Replace("0", digit) : Result + digit;
     }
 
     [RelayCommand]
     private void RemoveDigit()
     {
+        if (_isNewNumber)
+        {
+            Result = "0";
+            _isNewNumber = false;
+        }
         Result = Result.Length == 1 ? "0" : Result.Remove(Result.Length - 1);
     }
 
     [RelayCommand]
     private void SetOperation(OperationType operationType)
     {
-        GetNumber();
-        _tokens.Add(new OperationExpressionToken(operationType));
+        _isResultShown = false;
+        if (!_isNewNumber)
+        {
+            GetNumber();
+        }
+
+        if (_tokens.Count == 0 || (_tokens[^1] is not NumberExpressionToken && _tokens[^1] is not BracketExpressionToken))
+        {
+            _tokens.Add(new NumberExpressionToken(0));
+            _tokens.Add(new OperationExpressionToken(operationType));
+        }
+        else
+        {
+            var lastToken = _tokens[^1];
+            if (lastToken is OperationExpressionToken)
+            {
+                _tokens[^1] = new OperationExpressionToken(operationType);
+            }
+            else
+            {
+                _tokens.Add(new OperationExpressionToken(operationType));
+            }
+        }
+
+
+        Expression = _tokens.ReadExpression();
     }
 
     [RelayCommand]
@@ -52,13 +93,22 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void GetEqual()
     {
-        GetNumber();
+        if (!_isNewNumber)
+        {
+            GetNumber();
+        }
         _tokens.ReadExpression();
         _tokens.TryParse(out var parsed);
-        parsed.TryEvaluateRpn(out var result);
-        Result = result.ToString();
+
+        Result = !parsed.TryEvaluateRpn(out var result, out var message) ? message : result.ToString("0.###########");
+
+        if (!_isResultShown)
+        {
+            Expression += " =";
+        }
 
         _isResultShown = true;
+
     }
 
     [RelayCommand]
@@ -66,6 +116,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         _tokens.Clear();
         Result = "0";
+        Expression = "";
 
         _isResultShown = false;
     }
@@ -80,9 +131,23 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void SetBracket(BracketType bracketType)
     {
-        GetNumber();
+        if (!_isNewNumber)
+        {
+            GetNumber();
+        }
+
+        if (_tokens.Count > 0 && bracketType == BracketType.Open)
+        {
+            var lastToken = _tokens[^1];
+            if (lastToken is NumberExpressionToken || (lastToken is BracketExpressionToken br && br.BracketType == BracketType.Close))
+            {
+                _tokens.Add(new OperationExpressionToken(OperationType.Multiply));
+            }
+        }
 
         _tokens.Add(new BracketExpressionToken(bracketType));
+
+        Expression = _tokens.ReadExpression();
     }
 
     private void GetNumber()
@@ -91,14 +156,17 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             if (!double.TryParse(Result, out var number))
             {
-                Result = "Error";
+                Result = "Invalid input!";
                 return;
             }
 
             _tokens.Add(new NumberExpressionToken(number));
         }
 
+        Expression = _tokens.ReadExpression();
+
         Result = "0";
         _isResultShown = false;
+        _isNewNumber = true;
     }
 }
