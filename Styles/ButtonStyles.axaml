@@ -2,11 +2,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:CalculatorAvalonia.ViewModels"
         xmlns:op="using:CalculatorAvalonia.Models.Rpn.Operations"
+        xmlns:conv="using:CalculatorAvalonia.Converters"
         x:DataType="vm:MainWindowViewModel">
   <Design.PreviewWith>
         <Button Content="Sample"/>
   </Design.PreviewWith>
-
+    
+    <Styles.Resources>
+        <conv:DigitHotKeyConverter x:Key="DigitHotKeyConverter"/>
+    </Styles.Resources>
+    
     <Style Selector="Button">
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
@@ -19,14 +24,16 @@
         <Setter Property="Command" Value="{Binding AddDigitCommand}" />
         <Setter Property="CommandParameter"
                 Value="{Binding Content, RelativeSource={RelativeSource Self}}" />
+        <Setter Property="HotKey"
+                Value="{Binding Content, RelativeSource={RelativeSource Self}, Converter={StaticResource DigitHotKeyConverter}}" />
     </Style>
-    
     
     <Style Selector="Button.btnAdd">
         <Setter Property="Command" Value="{Binding SetOperationCommand}" />
         <Setter Property="CommandParameter"
                 Value="{x:Static op:OperationType.Add}" />
         <Setter Property="Content" Value="+" />
+        <Setter Property="HotKey" Value="Add" />
     </Style>
     
     <Style Selector="Button.btnSubtract">
@@ -34,6 +41,7 @@
         <Setter Property="CommandParameter"
                 Value="{x:Static op:OperationType.Subtract}" />
         <Setter Property="Content" Value="-" />
+        <Setter Property="HotKey" Value="Subtract" />
     </Style>
 
     <Style Selector="Button.btnDivide">
@@ -41,6 +49,7 @@
         <Setter Property="CommandParameter"
                 Value="{x:Static op:OperationType.Divide}" />
         <Setter Property="Content" Value="/" />
+        <Setter Property="HotKey" Value="Divide" />
     </Style>
 
     <Style Selector="Button.btnMultiply">
@@ -48,6 +57,7 @@
         <Setter Property="CommandParameter"
                 Value="{x:Static op:OperationType.Multiply}" />
         <Setter Property="Content" Value="*" />
+        <Setter Property="HotKey" Value="Multiply" />
     </Style>
 
 
@@ -55,12 +65,42 @@
         <Setter Property="Command" Value="{Binding SetBracketCommand}" />
         <Setter Property="CommandParameter" Value="{x:Static op:BracketType.Open}" />
         <Setter Property="Content" Value="(" />
+        <Setter Property="HotKey" Value="Shift+D9" />
     </Style>
 
     <Style Selector="Button.btnCloseBracket">
         <Setter Property="Command" Value="{Binding SetBracketCommand}" />
         <Setter Property="CommandParameter" Value="{x:Static op:BracketType.Close}" />
         <Setter Property="Content" Value=")" />
+        <Setter Property="HotKey" Value="Shift+D0" />
     </Style>
-        
+
+    <Style Selector="Button.btnDot">
+        <Setter Property="Command" Value="{Binding AddPointCommand}" />
+        <Setter Property="Content" Value="." />
+        <Setter Property="HotKey" Value="." />
+    </Style>
+
+    <Style Selector="Button.btnReverse">
+        <Setter Property="Command" Value="{Binding TurnSignCommand}" />
+        <Setter Property="Content" Value="+/-" />
+    </Style>
+
+    <Style Selector="Button.btnClear">
+        <Setter Property="Command" Value="{Binding ClearCommand}" />
+        <Setter Property="Content" Value="C" />
+        <Setter Property="HotKey" Value="Escape" />
+    </Style>
+
+    <Style Selector="Button.btnCancel">
+        <Setter Property="Command" Value="{Binding RemoveDigitCommand}" />
+        <Setter Property="Content" Value="←" />
+        <Setter Property="HotKey" Value="Back" />
+    </Style>
+    
+    <Style Selector="Button.btnEqual">
+        <Setter Property="Command" Value="{Binding GetEqualCommand}" />
+        <Setter Property="Content" Value="=" />
+        <Setter Property="HotKey" Value="Enter" />
+    </Style>
 </Styles>
