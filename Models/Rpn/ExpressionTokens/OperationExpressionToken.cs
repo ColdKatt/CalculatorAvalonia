@@ -40,12 +40,23 @@ namespace CalculatorAvalonia.Models.Rpn.ExpressionTokens
             if (Associativity == Associativity.Left && Priority <= operationStack.Peek().Priority
                 || Associativity == Associativity.Right && Priority < operationStack.Peek().Priority)
             {
-                outputQueue.Enqueue(operationStack.Pop());
+                var allow = true;
+                while (allow)
+                {
+                    outputQueue.Enqueue(operationStack.Pop());
+
+                    if (operationStack.Count == 0 || Priority > operationStack.Peek().Priority)
+                    {
+                        allow = false;
+                    }
+                }
+
                 operationStack.Push(this);
             }
             else
             {
                 operationStack.Push(this);
+                return;
             }
         }
 
