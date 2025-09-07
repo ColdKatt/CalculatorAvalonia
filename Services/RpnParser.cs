@@ -27,11 +27,12 @@ namespace CalculatorAvalonia.Services
             return true;
         }
 
-        public static bool TryEvaluateRpn(this List<ExpressionTokenBase> rpnParsedExpressionTokens, out double result)
+        public static bool TryEvaluateRpn(this List<ExpressionTokenBase> rpnParsedExpressionTokens, out double result, out string message)
         {
             var stack = new Stack<ExpressionTokenBase>();
 
             result = 0;
+            message = "";
 
             foreach (var token in rpnParsedExpressionTokens)
             {
@@ -44,11 +45,19 @@ namespace CalculatorAvalonia.Services
                 {
                     if (!stack.TryPop(out var firstNumber) || !stack.TryPop(out var secondNumber))
                     {
+                        message = "Invalid input!";
                         return false;
                     }
 
                     if (firstNumber is not NumberExpressionToken firstNumberToken || secondNumber is not NumberExpressionToken secondNumberToken)
                     {
+                        message = "Invalid input!";
+                        return false;
+                    }
+
+                    if (operationToken.OperationType == Models.Rpn.Operations.OperationType.Divide && firstNumberToken.Value == 0)
+                    {
+                        message = "Can't divide to zero!";
                         return false;
                     }
 
@@ -58,8 +67,14 @@ namespace CalculatorAvalonia.Services
             }
 
             // expected 1 token left in stack and its type == Number
-            var leftToken = stack.Pop() as NumberExpressionToken ?? throw new ArgumentException();
+            if (stack.Count != 1 || stack.Pop() is not NumberExpressionToken leftToken)
+            {
+                message = "Invalid input!";
+                return false;
+            }
+
             result = leftToken.Value;
+            message = "Success!";
             return true;
         }
 
