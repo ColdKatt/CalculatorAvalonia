@@ -3,8 +3,17 @@ using System;
 
 namespace CalculatorAvalonia.Models.Rpn.ExpressionTokens.Extensions
 {
+    /// <summary>
+    /// Class-extension for expression tokens
+    /// </summary>
     public static class ExpressionTokenExtensions
     {
+        /// <summary>
+        /// Gives priority to operation token.
+        /// </summary>
+        /// <param name="operationExpressionToken"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public static int GetTokenPriority(this OperationExpressionToken operationExpressionToken)
         {
             switch (operationExpressionToken.OperationType)
@@ -22,6 +31,12 @@ namespace CalculatorAvalonia.Models.Rpn.ExpressionTokens.Extensions
             }
         }
 
+        /// <summary>
+        /// Gives instructions to operation token.
+        /// </summary>
+        /// <param name="operationExpressionToken"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public static Func<double[], double> GetOperation(this OperationExpressionToken operationExpressionToken)
         {
             switch (operationExpressionToken.OperationType)
@@ -38,6 +53,13 @@ namespace CalculatorAvalonia.Models.Rpn.ExpressionTokens.Extensions
                     throw new NotImplementedException();
             }
         }
+
+        /// <summary>
+        /// Determines operands count to operation types.
+        /// </summary>
+        /// <param name="operationExpressionToken"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public static Operands GetOperands(this OperationExpressionToken operationExpressionToken)
         {
             switch (operationExpressionToken.OperationType)
@@ -55,6 +77,12 @@ namespace CalculatorAvalonia.Models.Rpn.ExpressionTokens.Extensions
             }
         }
 
+        /// <summary>
+        /// Determines associativity to operation types.
+        /// </summary>
+        /// <param name="operationExpressionToken"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public static Associativity GetAssociativity(this OperationExpressionToken operationExpressionToken)
         {
             switch (operationExpressionToken.OperationType)
@@ -72,6 +100,12 @@ namespace CalculatorAvalonia.Models.Rpn.ExpressionTokens.Extensions
             }
         }
 
+        /// <summary>
+        /// Determines reading for operation types.
+        /// </summary>
+        /// <param name="operationExpressionToken"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public static string GetOperationReading(this OperationExpressionToken operationExpressionToken)
         {
             switch (operationExpressionToken.OperationType)

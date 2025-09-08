@@ -5,8 +5,17 @@ using Tmds.DBus.Protocol;
 
 namespace CalculatorAvalonia.Services
 {
+    /// <summary>
+    /// Basic parser class for expression reduction to RPN-notation.
+    /// </summary>
     public static class RpnParser
     {
+        /// <summary>
+        /// Parsing list of tokens to list of tokens with RPN-notation.
+        /// </summary>
+        /// <param name="tokens"></param>
+        /// <param name="rpnParsedExpressionTokens"></param>
+        /// <returns></returns>
         public static bool TryParse(this List<ExpressionTokenBase> tokens, out List<ExpressionTokenBase> rpnParsedExpressionTokens)
         {
             var outputQueue = new Queue<ExpressionTokenBase>();
@@ -27,6 +36,13 @@ namespace CalculatorAvalonia.Services
             return true;
         }
 
+        /// <summary>
+        /// Trying get result from parsed token list to RPN-notation.
+        /// </summary>
+        /// <param name="rpnParsedExpressionTokens"></param>
+        /// <param name="result"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public static bool TryEvaluateRpn(this List<ExpressionTokenBase> rpnParsedExpressionTokens, out double result, out string message)
         {
             var stack = new Stack<ExpressionTokenBase>();
@@ -88,6 +104,11 @@ namespace CalculatorAvalonia.Services
             return true;
         }
 
+        /// <summary>
+        /// Reads full expression from list of tokens.
+        /// </summary>
+        /// <param name="rpnParsedExpressionTokens"></param>
+        /// <returns></returns>
         public static string ReadExpression(this List<ExpressionTokenBase> rpnParsedExpressionTokens)
         {
             var expression = "";
@@ -100,6 +121,12 @@ namespace CalculatorAvalonia.Services
             return expression.Trim();
         }
 
+        /// <summary>
+        /// Determines possibility to take a number from the stack.
+        /// </summary>
+        /// <param name="stack"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         private static bool TryPopNumberToken(Stack<ExpressionTokenBase> stack, out NumberExpressionToken token)
         {
             token = new(0);

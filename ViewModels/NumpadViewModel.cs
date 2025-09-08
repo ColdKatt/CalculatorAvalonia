@@ -4,6 +4,9 @@ using System;
 
 namespace CalculatorAvalonia.ViewModels
 {
+    /// <summary>
+    /// Class contains method for numpads work (0-9, dot, reverse sign buttons)
+    /// </summary>
     public partial class NumpadViewModel : ViewModelBase
     {
         public event Action? OnNumberChanged;

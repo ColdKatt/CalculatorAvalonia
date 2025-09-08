@@ -5,6 +5,9 @@ using System.Globalization;
 
 namespace CalculatorAvalonia.Converters
 {
+    /// <summary>
+    /// Converter for 0-9 button styles. Converts 0-9 nums to D0-D9 variation.
+    /// </summary>
     public class DigitHotKeyConverter : IValueConverter
     {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
