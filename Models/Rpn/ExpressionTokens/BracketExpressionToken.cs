@@ -6,9 +6,9 @@ namespace CalculatorAvalonia.Models.Rpn.ExpressionTokens
 {
     public sealed class BracketExpressionToken : ExpressionTokenBase
     {
-        private BracketType _bracketType;
-
         public BracketType BracketType { get => _bracketType; }
+
+        private BracketType _bracketType;
 
         public BracketExpressionToken(BracketType bracketType)
         {
