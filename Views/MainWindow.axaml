@@ -7,7 +7,7 @@
         MinWidth="400" MinHeight="400"
         x:Class="CalculatorAvalonia.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/calculator.ico"
         Title="CalculatorAvalonia">
 
     <Design.DataContext>
