@@ -3,12 +3,15 @@ using CalculatorAvalonia.Models.Rpn.Operations;
 using CalculatorAvalonia.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System;
 using System.Collections.Generic;
 
 namespace CalculatorAvalonia.ViewModels;
 
-public partial class MainWindowViewModel : ViewModelBase
+public partial class MainWindowViewModel : ViewModelBase, IDisposable
 {
+    public NumpadViewModel NumpadViewModel { get; }
+
     [ObservableProperty]
     private string _result;
 
@@ -18,52 +21,33 @@ public partial class MainWindowViewModel : ViewModelBase
     private List<ExpressionTokenBase> _tokens;
 
     private bool _isResultShown;
-    private bool _isNewNumber;
 
     public MainWindowViewModel()
     {
+        NumpadViewModel ??= new();
+        NumpadViewModel.OnNumberChanged += () => Result = NumpadViewModel.Number;
+
         _tokens ??= new();
         Result = "0";
         Expression = "";
-
-        _isNewNumber = true;
-    }
-
-    [RelayCommand]
-    private void AddDigit(string digit)
-    {
-        if (_isNewNumber)
-        {
-            Result = "0";
-            _isNewNumber = false;
-        }
-        Result = Result == "0" ? Result = Result.Replace("0", digit) : Result + digit;
-    }
-
-    [RelayCommand]
-    private void RemoveDigit()
-    {
-        if (_isNewNumber)
-        {
-            Result = "0";
-            _isNewNumber = false;
-        }
-        Result = Result.Length == 1 ? "0" : Result.Remove(Result.Length - 1);
     }
 
     [RelayCommand]
     private void SetOperation(OperationType operationType)
     {
+        var numStr = NumpadViewModel.EndWrite();
         _isResultShown = false;
-        if (!_isNewNumber)
-        {
-            GetNumber();
-        }
+        
+        PutNumberIntoToken(numStr);
 
-        if (_tokens.Count == 0 || (_tokens[^1] is not NumberExpressionToken && _tokens[^1] is not BracketExpressionToken))
+        if (_tokens.Count == 0)
         {
             _tokens.Add(new NumberExpressionToken(0));
             _tokens.Add(new OperationExpressionToken(operationType));
+        }
+        else if (_tokens[^1] is not NumberExpressionToken && _tokens[^1] is not BracketExpressionToken)
+        {
+            _tokens[^1] = new OperationExpressionToken(operationType);
         }
         else
         {
@@ -83,23 +67,13 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void AddPoint()
-    {
-        if (Result.Contains(',')) return;
-
-        Result += ",";
-    }
-
-    [RelayCommand]
     private void GetEqual()
     {
-        if (!_isNewNumber)
-        {
-            GetNumber();
-        }
+        var numStr = NumpadViewModel.EndWrite();
+        PutNumberIntoToken(numStr);
         _tokens.ReadExpression();
-        _tokens.TryParse(out var parsed);
 
+        _tokens.TryParse(out var parsed);
         Result = !parsed.TryEvaluateRpn(out var result, out var message) ? message : result.ToString("0.###########");
 
         if (!_isResultShown)
@@ -115,26 +89,18 @@ public partial class MainWindowViewModel : ViewModelBase
     private void Clear()
     {
         _tokens.Clear();
-        Result = "0";
+        NumpadViewModel.ClearInput();
+
         Expression = "";
 
         _isResultShown = false;
     }
 
     [RelayCommand]
-    private void TurnSign()
-    {
-        if (Result == "0") return;
-        Result = Result[0] == '-' ? Result.TrimStart('-') : Result.Insert(0, "-");
-    }
-
-    [RelayCommand]
     private void SetBracket(BracketType bracketType)
     {
-        if (!_isNewNumber)
-        {
-            GetNumber();
-        }
+        var numStr = NumpadViewModel.EndWrite();
+        PutNumberIntoToken(numStr);
 
         if (_tokens.Count > 0 && bracketType == BracketType.Open)
         {
@@ -150,11 +116,12 @@ public partial class MainWindowViewModel : ViewModelBase
         Expression = _tokens.ReadExpression();
     }
 
-    private void GetNumber()
+    private void PutNumberIntoToken(string numStr)
     {
+        if (string.IsNullOrEmpty(numStr)) return;
         if (!_isResultShown)
         {
-            if (!double.TryParse(Result, out var number))
+            if (!double.TryParse(numStr, out var number))
             {
                 Result = "Invalid input!";
                 return;
@@ -165,8 +132,11 @@ public partial class MainWindowViewModel : ViewModelBase
 
         Expression = _tokens.ReadExpression();
 
-        Result = "0";
         _isResultShown = false;
-        _isNewNumber = true;
+    }
+
+    public void Dispose()
+    {
+        NumpadViewModel.OnNumberChanged -= () => Result = NumpadViewModel.Number;
     }
 }

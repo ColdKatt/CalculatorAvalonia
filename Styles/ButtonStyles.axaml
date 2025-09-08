@@ -21,7 +21,7 @@
     </Style>
     
     <Style Selector="Button.btnDigit">
-        <Setter Property="Command" Value="{Binding AddDigitCommand}" />
+        <Setter Property="Command" Value="{Binding NumpadViewModel.AddDigitCommand}" />
         <Setter Property="CommandParameter"
                 Value="{Binding Content, RelativeSource={RelativeSource Self}}" />
         <Setter Property="HotKey"
@@ -76,13 +76,13 @@
     </Style>
 
     <Style Selector="Button.btnDot">
-        <Setter Property="Command" Value="{Binding AddPointCommand}" />
+        <Setter Property="Command" Value="{Binding NumpadViewModel.AddDotCommand}" />
         <Setter Property="Content" Value="." />
         <Setter Property="HotKey" Value="." />
     </Style>
 
     <Style Selector="Button.btnReverse">
-        <Setter Property="Command" Value="{Binding TurnSignCommand}" />
+        <Setter Property="Command" Value="{Binding NumpadViewModel.ReverseSignCommand}" />
         <Setter Property="Content" Value="+/-" />
     </Style>
 
@@ -93,7 +93,7 @@
     </Style>
 
     <Style Selector="Button.btnCancel">
-        <Setter Property="Command" Value="{Binding RemoveDigitCommand}" />
+        <Setter Property="Command" Value="{Binding NumpadViewModel.RemoveDigitCommand}" />
         <Setter Property="Content" Value="←" />
         <Setter Property="HotKey" Value="Back" />
     </Style>
