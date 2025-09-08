@@ -100,21 +100,21 @@ namespace CalculatorAvalonia.Services
             return expression.Trim();
         }
 
-        public static bool TryPopNumberToken(Stack<ExpressionTokenBase> stack, out NumberExpressionToken token)
+        private static bool TryPopNumberToken(Stack<ExpressionTokenBase> stack, out NumberExpressionToken token)
         {
-            if (!stack.TryPop(out var firstNumber))
+            token = new(0);
+
+            if (!stack.TryPop(out var number))
             {
-                token = new(0);
                 return false;
             }
 
-            if (firstNumber is not NumberExpressionToken firstNumberToken)
+            if (number is not NumberExpressionToken numberToken)
             {
-                token = new(0);
                 return false;
             }
 
-            token = firstNumberToken;
+            token = numberToken;
             return true;
         }
     }
