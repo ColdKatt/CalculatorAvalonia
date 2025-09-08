@@ -1,7 +1,7 @@
 ﻿using CalculatorAvalonia.Models.Rpn.ExpressionTokens;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using Tmds.DBus.Protocol;
 
 namespace CalculatorAvalonia.Services
 {
@@ -41,28 +41,38 @@ namespace CalculatorAvalonia.Services
                     stack.Push(token);
                 }
 
-                if (token is OperationExpressionToken operationToken) // BINARY OPERATION
+                if (token is OperationExpressionToken operationToken)
                 {
-                    if (!stack.TryPop(out var firstNumber) || !stack.TryPop(out var secondNumber))
+                    if (!TryPopNumberToken(stack, out var firstNumberToken))
                     {
                         message = "Invalid input!";
                         return false;
                     }
 
-                    if (firstNumber is not NumberExpressionToken firstNumberToken || secondNumber is not NumberExpressionToken secondNumberToken)
+                    if (operationToken.Operands == Models.Rpn.Operations.Operands.Binary)
                     {
-                        message = "Invalid input!";
-                        return false;
+                        if (!TryPopNumberToken(stack, out var secondNumberToken))
+                        {
+                            message = "Invalid input!";
+                            return false;
+                        }
+
+                        // checking divide to zero
+                        if (operationToken.OperationType == Models.Rpn.Operations.OperationType.Divide && firstNumberToken.Value == 0)
+                        {
+                            message = "Can't divide to zero!";
+                            return false;
+                        }
+
+                        var operationResult = new NumberExpressionToken(operationToken.Operation([secondNumberToken.Value, firstNumberToken.Value]));
+                        stack.Push(operationResult);
+                    }
+                    else
+                    {
+                        var operationResult = new NumberExpressionToken(operationToken.Operation([firstNumberToken.Value]));
+                        stack.Push(operationResult);
                     }
 
-                    if (operationToken.OperationType == Models.Rpn.Operations.OperationType.Divide && firstNumberToken.Value == 0)
-                    {
-                        message = "Can't divide to zero!";
-                        return false;
-                    }
-
-                    var operationResult = new NumberExpressionToken(operationToken.Operation(secondNumberToken.Value, firstNumberToken.Value));
-                    stack.Push(operationResult);
                 }
             }
 
@@ -88,6 +98,24 @@ namespace CalculatorAvalonia.Services
             }
 
             return expression.Trim();
+        }
+
+        public static bool TryPopNumberToken(Stack<ExpressionTokenBase> stack, out NumberExpressionToken token)
+        {
+            if (!stack.TryPop(out var firstNumber))
+            {
+                token = new(0);
+                return false;
+            }
+
+            if (firstNumber is not NumberExpressionToken firstNumberToken)
+            {
+                token = new(0);
+                return false;
+            }
+
+            token = firstNumberToken;
+            return true;
         }
     }
 }

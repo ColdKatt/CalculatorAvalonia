@@ -22,18 +22,34 @@ namespace CalculatorAvalonia.Models.Rpn.ExpressionTokens.Extensions
             }
         }
 
-        public static Func<double, double, double> GetOperation(this OperationExpressionToken operationExpressionToken)
+        public static Func<double[], double> GetOperation(this OperationExpressionToken operationExpressionToken)
         {
             switch (operationExpressionToken.OperationType)
             {
                 case OperationType.Add:
-                    return (a, b) => a + b;
+                    return (a) => a[0] + a[1];
                 case OperationType.Subtract:
-                    return (a, b) => a - b;
+                    return (a) => a[0] - a[1];
                 case OperationType.Multiply:
-                    return (a, b) => a * b;
+                    return (a) => a[0] * a[1];
                 case OperationType.Divide:
-                    return (a, b) => a / b;
+                    return (a) => a[0] / a[1];
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+        public static Operands GetOperands(this OperationExpressionToken operationExpressionToken)
+        {
+            switch (operationExpressionToken.OperationType)
+            {
+                case OperationType.Add:
+                    return Operands.Binary;
+                case OperationType.Subtract:
+                    return Operands.Binary;
+                case OperationType.Multiply:
+                    return Operands.Binary;
+                case OperationType.Divide:
+                    return Operands.Binary;
                 default:
                     throw new NotImplementedException();
             }

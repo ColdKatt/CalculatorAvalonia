@@ -7,11 +7,13 @@ namespace CalculatorAvalonia.Models.Rpn.ExpressionTokens
 {
     public sealed class OperationExpressionToken : ExpressionTokenBase
     {
-        public readonly Func<double, double, double> Operation;
+        public readonly Func<double[], double> Operation;
 
+        public Operands Operands { get => _operands; }
         public OperationType OperationType { get => _operationType; }
         public Associativity Associativity { get => _associativity; }
 
+        private Operands _operands;
         private OperationType _operationType;
         private Associativity _associativity;
 
@@ -24,6 +26,7 @@ namespace CalculatorAvalonia.Models.Rpn.ExpressionTokens
             _priority = this.GetTokenPriority();
             _associativity = this.GetAssociativity();
             _tokenReading = this.GetOperationReading();
+            _operands = this.GetOperands();
             Operation = this.GetOperation();
         }
 
