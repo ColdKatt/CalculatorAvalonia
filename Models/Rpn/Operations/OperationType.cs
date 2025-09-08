@@ -8,6 +8,7 @@
         Add,
         Subtract,
         Multiply,
-        Divide
+        Divide,
+        Factorial
     }
 }

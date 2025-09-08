@@ -26,6 +26,8 @@ namespace CalculatorAvalonia.Models.Rpn.ExpressionTokens.Extensions
                     return 4;
                 case OperationType.Divide:
                     return 4;
+                case OperationType.Factorial:
+                    return 5;
                 default:
                     throw new NotImplementedException();
             }
@@ -49,6 +51,17 @@ namespace CalculatorAvalonia.Models.Rpn.ExpressionTokens.Extensions
                     return (a) => a[0] * a[1];
                 case OperationType.Divide:
                     return (a) => a[0] / a[1];
+                case OperationType.Factorial:
+                    return (a) => 
+                    {
+                        var res = 1d;
+                        while (a[0] >= 1)
+                        {
+                            res *= a[0];
+                            a[0]--;
+                        }
+                        return res;
+                    };
                 default:
                     throw new NotImplementedException();
             }
@@ -72,6 +85,8 @@ namespace CalculatorAvalonia.Models.Rpn.ExpressionTokens.Extensions
                     return Operands.Binary;
                 case OperationType.Divide:
                     return Operands.Binary;
+                case OperationType.Factorial:
+                    return Operands.Unary;
                 default:
                     throw new NotImplementedException();
             }
@@ -95,6 +110,8 @@ namespace CalculatorAvalonia.Models.Rpn.ExpressionTokens.Extensions
                     return Associativity.Left;
                 case OperationType.Divide:
                     return Associativity.Left;
+                case OperationType.Factorial:
+                    return Associativity.Right;
                 default:
                     throw new NotImplementedException();
             }
@@ -118,6 +135,8 @@ namespace CalculatorAvalonia.Models.Rpn.ExpressionTokens.Extensions
                     return "*";
                 case OperationType.Divide:
                     return "/";
+                case OperationType.Factorial:
+                    return "!";
                 default:
                     throw new NotImplementedException();
             }

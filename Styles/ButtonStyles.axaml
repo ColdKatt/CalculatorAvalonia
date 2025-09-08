@@ -60,6 +60,13 @@
         <Setter Property="HotKey" Value="Multiply" />
     </Style>
 
+    <Style Selector="Button.btnFact">
+        <Setter Property="Command" Value="{Binding SetOperationCommand}" />
+        <Setter Property="CommandParameter"
+                Value="{x:Static op:OperationType.Factorial}" />
+        <Setter Property="Content" Value="!" />
+        <Setter Property="HotKey" Value="Shift+D1" />
+    </Style>
 
     <Style Selector="Button.btnOpenBracket">
         <Setter Property="Command" Value="{Binding SetBracketCommand}" />

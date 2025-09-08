@@ -45,14 +45,9 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
             _tokens.Add(new NumberExpressionToken(0));
             _tokens.Add(new OperationExpressionToken(operationType));
         }
-        else if (_tokens[^1] is not NumberExpressionToken && _tokens[^1] is not BracketExpressionToken)
+        else if (_tokens[^1] is OperationExpressionToken opToken)
         {
-            _tokens[^1] = new OperationExpressionToken(operationType);
-        }
-        else
-        {
-            var lastToken = _tokens[^1];
-            if (lastToken is OperationExpressionToken)
+            if (opToken.Associativity != Associativity.Right)
             {
                 _tokens[^1] = new OperationExpressionToken(operationType);
             }
@@ -60,6 +55,10 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
             {
                 _tokens.Add(new OperationExpressionToken(operationType));
             }
+        }
+        else
+        {
+            _tokens.Add(new OperationExpressionToken(operationType));
         }
 
 
