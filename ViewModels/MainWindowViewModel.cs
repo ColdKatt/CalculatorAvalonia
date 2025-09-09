@@ -1,16 +1,20 @@
-﻿using CalculatorAvalonia.Models.Rpn.ExpressionTokens;
+﻿using Avalonia.Controls;
+using CalculatorAvalonia.Models.ExpressionHistory;
+using CalculatorAvalonia.Models.Rpn.ExpressionTokens;
 using CalculatorAvalonia.Models.Rpn.Operations;
 using CalculatorAvalonia.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace CalculatorAvalonia.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase, IDisposable
 {
     public NumpadViewModel NumpadViewModel { get; }
+    public HistoryPanelViewModel HistoryPanelViewModel { get; }
 
     [ObservableProperty]
     private string _result;
@@ -22,14 +26,17 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
 
     private bool _isResultShown;
 
-    public MainWindowViewModel()
+    public MainWindowViewModel(HistoryPanelViewModel historyPanelViewModel)
     {
+        HistoryPanelViewModel = historyPanelViewModel;
         NumpadViewModel ??= new();
-        NumpadViewModel.OnNumberChanged += () => Result = NumpadViewModel.Number;
 
         _tokens ??= new();
+
         Result = "0";
         Expression = "";
+
+        NumpadViewModel.OnNumberChanged += () => Result = NumpadViewModel.Number;
     }
 
     [RelayCommand]
@@ -73,7 +80,20 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
         _tokens.ReadExpression();
 
         _tokens.TryParse(out var parsed);
-        Result = !parsed.TryEvaluateRpn(out var result, out var message) ? message : result.ToString("0.###########");
+
+        var isEvaluateSuccess = parsed.TryEvaluateRpn(out var result, out var message);
+
+        if (isEvaluateSuccess)
+        {
+            Result = result.ToString("0.###########");
+
+            var newHistoryItem = new ExpressionHistoryItem(_tokens, Result);
+            HistoryPanelViewModel.HistoryService.Add(newHistoryItem);
+        }
+        else
+        {
+            Result = message;
+        }
 
         if (!_isResultShown)
         {
@@ -81,7 +101,6 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
         }
 
         _isResultShown = true;
-
     }
 
     [RelayCommand]
@@ -113,6 +132,21 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
         _tokens.Add(new BracketExpressionToken(bracketType));
 
         Expression = _tokens.ReadExpression();
+    }
+
+    [RelayCommand]
+    private void RestoreExpression(ExpressionHistoryItem item)
+    {
+        if (item == null)
+        {
+            return;
+        }
+
+        _tokens = new(item.Tokens);
+        Expression = item.Expression;
+        Result = item.Result;
+
+        _isResultShown = true;
     }
 
     private void PutNumberIntoToken(string numStr)

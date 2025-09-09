@@ -6,6 +6,10 @@ using System.Linq;
 using Avalonia.Markup.Xaml;
 using CalculatorAvalonia.ViewModels;
 using CalculatorAvalonia.Views;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using CalculatorAvalonia.Services.ExpressionHistory;
+using CalculatorAvalonia.Services.FIlesService;
 
 namespace CalculatorAvalonia;
 
@@ -18,15 +22,27 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        BindingPlugins.DataValidators.RemoveAt(0); 
+
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
-            // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
+            var collection = new ServiceCollection();
+            collection.AddSingleton<IExpressionHistoryService, ExpressionHistory>();
+            collection.AddSingleton<IFilesService, FilesService>();
+            collection.AddSingleton<HistoryPanelViewModel>();
+            collection.AddSingleton<MainWindowViewModel>();
+
+            var services = collection.BuildServiceProvider();
+
+            var vm = services.GetRequiredService<MainWindowViewModel>();
+
             DisableAvaloniaDataAnnotationValidation();
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(),
+                DataContext = vm,
             };
+
         }
 
         base.OnFrameworkInitializationCompleted();

@@ -12,7 +12,7 @@
         <conv:DigitHotKeyConverter x:Key="DigitHotKeyConverter"/>
     </Styles.Resources>
     
-    <Style Selector="Button">
+    <Style Selector="Button.btnPad">
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -109,5 +109,12 @@
         <Setter Property="Command" Value="{Binding GetEqualCommand}" />
         <Setter Property="Content" Value="=" />
         <Setter Property="HotKey" Value="Enter" />
+    </Style>
+
+    <Style Selector="Button.btnPanel">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Height" Value="30" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 </Styles>

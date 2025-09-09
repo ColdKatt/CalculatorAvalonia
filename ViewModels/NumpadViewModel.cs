@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using System;
 
 namespace CalculatorAvalonia.ViewModels
@@ -40,7 +39,7 @@ namespace CalculatorAvalonia.ViewModels
             _isWriting = false;
             return Number;
         }
-        
+
         public void ClearInput()
         {
             EndWrite();
