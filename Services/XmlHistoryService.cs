@@ -50,7 +50,7 @@ namespace CalculatorAvalonia.Services
 
                 foreach (var item in historyItems)
                 {
-                    if (!item.TryParse(out var itemTag)) return;
+                    if (!item.Wrap(out var itemTag)) return;
                     WriteElement(w, itemTag);
                 }
 
@@ -72,7 +72,7 @@ namespace CalculatorAvalonia.Services
                     {
                         if (!ReadElement(r, r.Name, out var outputTag)) return false;
 
-                        if (!outputTag.TryParse(out var item)) return false;
+                        if (!outputTag.Unwrap(out var item)) return false;
 
                         historyItemsList.Add(item);
                     }

@@ -9,7 +9,7 @@ namespace CalculatorAvalonia.Models.XmlTagHandling
 {
     public static class TagHandlerExtension
     {
-        public static bool TryParse(this TagHandler tag, out ExpressionHistoryItem item)
+        public static bool Unwrap(this TagHandler tag, out ExpressionHistoryItem item)
         {
             var tokens = new List<ExpressionTokenBase>();
             var result = "";
@@ -24,7 +24,7 @@ namespace CalculatorAvalonia.Models.XmlTagHandling
             {
                 tokenTag.FindUntilValue(out var tokenValue);
 
-                if (!tokenTag.TryParse(tokenValue, out var token)) return false;
+                if (!tokenTag.Unwrap(tokenValue, out var token)) return false;
 
                 tokens.Add(token);
             }
@@ -38,7 +38,7 @@ namespace CalculatorAvalonia.Models.XmlTagHandling
 
         }
 
-        public static bool TryParse(this TagHandler tag, string tokenValue, out ExpressionTokenBase expressionToken)
+        public static bool Unwrap(this TagHandler tag, string tokenValue, out ExpressionTokenBase expressionToken)
         {
             expressionToken = null!;
             if (!tag.TagName.Contains("ExpressionToken")) return false;
@@ -66,7 +66,7 @@ namespace CalculatorAvalonia.Models.XmlTagHandling
             return true;
         }
 
-        public static bool TryParse(this ExpressionHistoryItem expressionHistoryItem, out TagHandler tagHandler)
+        public static bool Wrap(this ExpressionHistoryItem expressionHistoryItem, out TagHandler tagHandler)
         {
             tagHandler = new TagHandler(XmlHistoryService.NODE_EXPRESSION_HISTORY_ITEM);
 
@@ -75,7 +75,7 @@ namespace CalculatorAvalonia.Models.XmlTagHandling
 
             foreach (var token in expressionHistoryItem.Tokens)
             {
-                if (!token.TryParse(out var tokenTag)) return false;
+                if (!token.Wrap(out var tokenTag)) return false;
 
                 tokensTag.InnerTags.Add(tokenTag);
             }
@@ -88,7 +88,7 @@ namespace CalculatorAvalonia.Models.XmlTagHandling
             return true;
         }
 
-        public static bool TryParse(this ExpressionTokenBase token, out TagHandler tagHandler)
+        public static bool Wrap(this ExpressionTokenBase token, out TagHandler tagHandler)
         {
             tagHandler = null!;
 
@@ -128,8 +128,6 @@ namespace CalculatorAvalonia.Models.XmlTagHandling
 
             tagHandler.InnerTags.Add(valueTag);
         }
-
-
 
         public static bool FindUntilValue(this TagHandler tag, out string value)
         {
