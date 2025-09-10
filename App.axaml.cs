@@ -4,11 +4,9 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using CalculatorAvalonia.Services.ExpressionHistory;
 using CalculatorAvalonia.Services.Extensions;
-using CalculatorAvalonia.Services.FIlesService;
 using CalculatorAvalonia.ViewModels;
 using CalculatorAvalonia.Views;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.IO;
 using System.Linq;
 

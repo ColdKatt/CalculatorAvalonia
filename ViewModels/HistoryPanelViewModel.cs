@@ -1,16 +1,10 @@
-﻿using Avalonia.Controls;
-using Avalonia.Platform.Storage;
-using CalculatorAvalonia.Models.ExpressionHistory;
+﻿using CalculatorAvalonia.Models.ExpressionHistory;
 using CalculatorAvalonia.Services.ExpressionHistory;
 using CalculatorAvalonia.Services.FIlesService;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CalculatorAvalonia.ViewModels
@@ -20,14 +14,12 @@ namespace CalculatorAvalonia.ViewModels
         public readonly IExpressionHistoryService HistoryService;
         public readonly IFilesService FilesService;
 
-        public string filter = "2 *";
-
         [ObservableProperty]
         private bool _isPaneOpen;
 
         public ObservableCollection<ExpressionHistoryItem> History { get; set; }
 
-        public HistoryPanelViewModel(IExpressionHistoryService service, IFilesService filesService) 
+        public HistoryPanelViewModel(IExpressionHistoryService service, IFilesService filesService)
         {
             HistoryService = service;
             FilesService = filesService;
@@ -62,7 +54,7 @@ namespace CalculatorAvalonia.ViewModels
             var file = await FilesService.OpenFileAsync();
 
             if (file != null)
-            { 
+            {
                 HistoryService.Load(file.Path.AbsolutePath);
             }
         }
