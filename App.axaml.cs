@@ -1,15 +1,14 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
-using System.Linq;
 using Avalonia.Markup.Xaml;
+using CalculatorAvalonia.Services.ExpressionHistory;
+using CalculatorAvalonia.Services.Extensions;
+using CalculatorAvalonia.Services.FIlesService;
 using CalculatorAvalonia.ViewModels;
 using CalculatorAvalonia.Views;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using CalculatorAvalonia.Services.ExpressionHistory;
-using CalculatorAvalonia.Services.FIlesService;
+using System.Linq;
 
 namespace CalculatorAvalonia;
 
@@ -22,18 +21,15 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        BindingPlugins.DataValidators.RemoveAt(0); 
+        BindingPlugins.DataValidators.RemoveAt(0);
 
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var collection = new ServiceCollection();
-            collection.AddSingleton<IExpressionHistoryService, ExpressionHistory>();
-            collection.AddSingleton<IFilesService, FilesService>();
-            collection.AddSingleton<HistoryPanelViewModel>();
-            collection.AddSingleton<MainWindowViewModel>();
 
-            var services = collection.BuildServiceProvider();
+            var services = collection.RegisterCommonDependencies()
+                                     .BuildServiceProvider();
 
             var vm = services.GetRequiredService<MainWindowViewModel>();
 
