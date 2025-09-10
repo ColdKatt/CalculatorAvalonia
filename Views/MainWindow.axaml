@@ -10,9 +10,6 @@
         Icon="/Assets/calculator.ico"
         Title="CalculatorAvalonia">
     
-    <Design.DataContext>
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
 
     <Window.Styles>
         <StyleInclude Source="/Styles/ButtonStyles.axaml" />
