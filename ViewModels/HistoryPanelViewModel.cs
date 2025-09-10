@@ -18,7 +18,7 @@ namespace CalculatorAvalonia.ViewModels
     public partial class HistoryPanelViewModel : ViewModelBase, IDisposable
     {
         public readonly IExpressionHistoryService HistoryService;
-        public IFilesService FilesService;
+        public readonly IFilesService FilesService;
 
         public string filter = "2 *";
 
