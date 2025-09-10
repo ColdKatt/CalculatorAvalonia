@@ -41,10 +41,7 @@ namespace CalculatorAvalonia.Services.ExpressionHistory
 
         public void Load(string path)
         {
-            if (!XmlHistoryService.Read(path, out var items))
-            {
-                throw new ArgumentException();
-            }
+            if (!XmlHistoryService.Read(path, out var items)) return;
 
             Clear();
             foreach (var item in items)
