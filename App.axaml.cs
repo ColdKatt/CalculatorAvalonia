@@ -8,12 +8,16 @@ using CalculatorAvalonia.Services.FIlesService;
 using CalculatorAvalonia.ViewModels;
 using CalculatorAvalonia.Views;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.IO;
 using System.Linq;
 
 namespace CalculatorAvalonia;
 
 public partial class App : Application
 {
+    private const string DEFAULT_SESSION_PATH = $"..\\output.xml";
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -39,6 +43,18 @@ public partial class App : Application
                 DataContext = vm,
             };
 
+            // save load session
+            var panel = services.GetService<IExpressionHistoryService>();
+
+            if (File.Exists(DEFAULT_SESSION_PATH))
+            {
+                panel?.Load(DEFAULT_SESSION_PATH);
+            }
+
+            desktop.Exit += (o, args) =>
+            {
+                panel?.Save(DEFAULT_SESSION_PATH);
+            };
         }
 
         base.OnFrameworkInitializationCompleted();

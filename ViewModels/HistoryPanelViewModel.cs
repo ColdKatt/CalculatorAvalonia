@@ -20,6 +20,8 @@ namespace CalculatorAvalonia.ViewModels
         public readonly IExpressionHistoryService HistoryService;
         public IFilesService FilesService;
 
+        public string filter = "2 *";
+
         [ObservableProperty]
         private bool _isPaneOpen;
 
