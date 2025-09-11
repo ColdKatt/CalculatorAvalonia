@@ -35,6 +35,7 @@ namespace CalculatorAvalonia.Services
         public const string NODE_NUMBER_TOKEN = "NumberExpressionToken";
         public const string NODE_OPERATION_TOKEN = "OperationExpressionToken";
         public const string NODE_BRACKET_TOKEN = "BracketExpressionToken";
+        public const string NODE_TOKEN_ABSTRACT = "ExpressionToken";
         public const string NODE_RESULT = "Result";
 
         public const string ELEMENT_VALUE = "Value";

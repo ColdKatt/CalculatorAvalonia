@@ -7,7 +7,10 @@ using System.Collections.Generic;
 
 namespace CalculatorAvalonia.Models.XmlTagHandling
 {
-    public static class TagHandlerExtension
+    /// <summary>
+    /// Represents methods for serching values and inner TagHandlers, wrapping and unwrapping classes into TagHandler object.
+    /// </summary>
+    public static class TagHandlerExtensions
     {
         public static bool Unwrap(this TagHandler tag, out ExpressionHistoryItem item)
         {
@@ -22,7 +25,7 @@ namespace CalculatorAvalonia.Models.XmlTagHandling
 
             foreach (var tokenTag in tokensTagHandler.InnerTags)
             {
-                tokenTag.FindUntilValue(out var tokenValue);
+                tokenTag.SearchUntilValue(out var tokenValue);
 
                 if (!tokenTag.Unwrap(tokenValue, out var token)) return false;
 
@@ -31,7 +34,7 @@ namespace CalculatorAvalonia.Models.XmlTagHandling
 
             if (!tag.SearchInnerTagByName(XmlHistoryService.NODE_RESULT, out var resultTag)) return false;
 
-            if (!resultTag.FindUntilValue(out result)) return false;
+            if (!resultTag.SearchUntilValue(out result)) return false;
 
             item = new(tokens, result);
             return true;
@@ -41,7 +44,7 @@ namespace CalculatorAvalonia.Models.XmlTagHandling
         public static bool Unwrap(this TagHandler tag, string tokenValue, out ExpressionTokenBase expressionToken)
         {
             expressionToken = null!;
-            if (!tag.TagName.Contains("ExpressionToken")) return false;
+            if (!tag.TagName.Contains(XmlHistoryService.NODE_TOKEN_ABSTRACT)) return false;
 
             if (tag.TagName == XmlHistoryService.NODE_NUMBER_TOKEN)
             {
@@ -129,7 +132,7 @@ namespace CalculatorAvalonia.Models.XmlTagHandling
             tagHandler.InnerTags.Add(valueTag);
         }
 
-        public static bool FindUntilValue(this TagHandler tag, out string value)
+        public static bool SearchUntilValue(this TagHandler tag, out string value)
         {
             value = "";
 
@@ -139,7 +142,7 @@ namespace CalculatorAvalonia.Models.XmlTagHandling
 
                 foreach (var innerTag in tag.InnerTags)
                 {
-                    if (innerTag.FindUntilValue(out value)) return true;
+                    if (innerTag.SearchUntilValue(out value)) return true;
                 }
 
                 return false;
